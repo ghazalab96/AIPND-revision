@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/print_results.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:
+# PROGRAMMER: Ghazal ArbabzadehBoroujeni
+# DATE CREATED:  14 November 2024
 # REVISED DATE: 
 # PURPOSE: Create a function print_results that prints the results statistics
 #          from the results statistics dictionary (results_stats_dic). It 
@@ -62,5 +62,36 @@ def print_results(results_dic, results_stats_dic, model,
     Returns:
            None - simply printing results.
     """    
+    
+    # Print the model architecture used
+    print(f"\nResults Summary for CNN Model Architecture: {model}")
+
+    # Print overall counts
+    print(f"Number of Images: {results_stats_dic['n_images']}")
+    print(f"Number of Dog Images: {results_stats_dic['n_dogs_img']}")
+    print(f"Number of 'Not-a' Dog Images: {results_stats_dic['n_notdogs_img']}")
+
+    # Print percentages in results_stats_dic that start with "pct"
+    for key in results_stats_dic:
+        if key.startswith("pct_"):
+            print(f"{key}: {results_stats_dic[key]:.2f}%")
+    
+    # Print incorrect classifications of dogs if requested
+    if print_incorrect_dogs and (results_stats_dic['n_correct_dogs'] + results_stats_dic['n_correct_notdogs'] != results_stats_dic['n_images']):
+        print("\nIncorrect Dog/Not-a-Dog Classifications:")
+        for key, value in results_dic.items():
+            # Only print when there's a misclassification in dog status
+            if sum(value[3:]) == 1:
+                print(f"Pet Image: {value[0]} | Classifier Label: {value[1]}")
+
+
+    # Print incorrect breed classifications if requested
+    if print_incorrect_breed and (results_stats_dic['n_correct_dogs'] != results_stats_dic['n_correct_breed']):
+        print("\nIncorrect Dog Breed Classifications:")
+        for key, value in results_dic.items():
+            # Only print when both are dogs but breed does not match
+            if sum(value[3:]) == 2 and value[2] == 0:
+                print(f"Pet Image: {value[0]} | Classifier Label: {value[1]}")
+
     None
                 
